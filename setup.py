@@ -39,6 +39,7 @@ setup(
     keywords='space physics earth geomagnetic rigidity magnetocosmics cosmic-rays solar-particles',
     license='CC BY-NC-SA 4.0',
     install_requires=['numpy>=1.23.1',
+                      'numba>=0.57.0',
                       'setuptools>=45.2.0'],
     #install_requires,
     setup_requires=['pytest-runner'],
