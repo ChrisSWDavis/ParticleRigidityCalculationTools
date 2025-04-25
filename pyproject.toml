@@ -1,6 +1,6 @@
 [project]
 name = "ParticleRigidityCalculationTools"
-version = "1.5.17"
+version = "1.5.18"
 description = "Python library containing tools for dealing with conversions between particle energy and rigidity"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -10,6 +10,7 @@ authors = [
 license = {text = "CC BY-NC-SA 4.0"}
 keywords = ["space", "physics", "earth", "geomagnetic", "rigidity", "magnetocosmics"]
 dependencies = [
+    "numba>=0.60.0",
     "numpy>=1.23.1",
     "pandas>=1.4.3",
     "setuptools>=45.2.0",

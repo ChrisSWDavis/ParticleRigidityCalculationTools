@@ -73,17 +73,26 @@ def convertParticleEnergyToRigidity(particleKineticEnergyInMeV, particleMassAU=1
         
     Returns
     -------
-    numpy.ndarray
+    numpy.ndarray or float
         Magnetic rigidity in GV (gigavolts).
+        Returns a float if input is a scalar, or numpy.ndarray if input is array-like.
     """
+    # Check if input is a scalar
+    input_is_scalar = isinstance(particleKineticEnergyInMeV, (int, float))
+    
     # Convert input to numpy array if it's a scalar
-    if isinstance(particleKineticEnergyInMeV, (int, float)):
+    if input_is_scalar:
         particleKineticEnergyInMeV = np.array([particleKineticEnergyInMeV])
     else:
         particleKineticEnergyInMeV = np.array(particleKineticEnergyInMeV)
     
     particleCharge, particleRestEnergy = determineParticleAttributes(particleMassAU, particleChargeAU)
-    return convertParticleEnergyToRigidity_numba(particleKineticEnergyInMeV, particleCharge, particleRestEnergy, chargeOfElectron, c)
+    result = convertParticleEnergyToRigidity_numba(particleKineticEnergyInMeV, particleCharge, particleRestEnergy, chargeOfElectron, c)
+    
+    # Return scalar if input was scalar
+    if input_is_scalar:
+        return float(result[0])
+    return result
 
 @njit
 def convertParticleRigidityToEnergy_numba(particleRigidityInGV, particleCharge, particleRestEnergy, chargeOfElectron, c):
@@ -120,17 +129,26 @@ def convertParticleRigidityToEnergy(particleRigidityInGV, particleMassAU=1, part
         
     Returns
     -------
-    numpy.ndarray
+    numpy.ndarray or float
         Particle kinetic energy in MeV.
+        Returns a float if input is a scalar, or numpy.ndarray if input is array-like.
     """
+    # Check if input is a scalar
+    input_is_scalar = isinstance(particleRigidityInGV, (int, float))
+    
     # Convert input to numpy array if it's a scalar
-    if isinstance(particleRigidityInGV, (int, float)):
+    if input_is_scalar:
         particleRigidityInGV = np.array([particleRigidityInGV])
     else:
         particleRigidityInGV = np.array(particleRigidityInGV)
     
     particleCharge, particleRestEnergy = determineParticleAttributes(particleMassAU, particleChargeAU)
-    return convertParticleRigidityToEnergy_numba(particleRigidityInGV, particleCharge, particleRestEnergy, chargeOfElectron, c)
+    result = convertParticleRigidityToEnergy_numba(particleRigidityInGV, particleCharge, particleRestEnergy, chargeOfElectron, c)
+    
+    # Return scalar if input was scalar
+    if input_is_scalar:
+        return float(result[0])
+    return result
 
 @njit
 def calculate_dKEoverdR_numba(particleKineticEnergyInMeV, particleChargeInCoulombs, particleRestEnergy, chargeOfElectron):

@@ -21,7 +21,7 @@ import ParticleRigidityCalculationTools as PRCT
 def test_getAtomicMass():
     """
     Test the atomic mass lookup functionality.
-    
+
     Verifies that the getAtomicMass function returns the correct
     atomic mass for a given atomic number (magnesium in this case).
     """
@@ -37,11 +37,11 @@ def test_rigidityConversion():
     particle physics references.
     """
     particleKineticEnergyInMeV = np.array([250.0, 578.5, 1056.8, 5123.9])
-    
+
     outputValues = PRCT.convertParticleEnergyToRigidity(particleKineticEnergyInMeV, particleMassAU=1.0, particleChargeAU=1.0)
-    
+
     roundedOutputValues = np.round(outputValues, 2)
-    
+
     assert list(roundedOutputValues) == [0.73, 1.19, 1.76, 5.99]
 
 def oneDPround(inputVal):
@@ -72,10 +72,10 @@ def test_rigidityAndEnergyConversion():
     
     # Convert energy to rigidity
     outputRigidityValues = PRCT.convertParticleEnergyToRigidity(particleKineticEnergyInMeV, particleMassAU=1.0, particleChargeAU=1.0)
-    
+
     # Convert rigidity back to energy
     outputEnergyValues = PRCT.convertParticleRigidityToEnergy(outputRigidityValues, particleMassAU=1.0, particleChargeAU=1.0)
-    
+
     rounded_values = np.round(outputEnergyValues, 1)
     expected_values = np.round(particleKineticEnergyInMeV, 1)
     
@@ -93,9 +93,9 @@ def test_EnergySpecToRigiditySpec():
     """
     energyValuesInMeV = np.array([1000, 2000, 3000, 4000, 5000])
     energyDistributionValues = np.array([1, 0.5, 0.2, 0.1, 0.01])
-    
+
     rigiditySpec = PRCT.convertParticleEnergySpecToRigiditySpec(energyValuesInMeV, energyDistributionValues, particleMassAU=1, particleChargeAU=1)
-    
+
     # Verify specific expected values
     assert round(rigiditySpec["Rigidity"][2], 2) == 3.82
     assert round(rigiditySpec["Rigidity distribution values"][2], 2) == 194.24
@@ -112,7 +112,7 @@ def test_RigiditySpecToEnergySpec():
     """
     rigidityValuesInGV = np.linspace(0.1, 10.0, 19)  # Avoid starting with 0 to prevent division by zero
     rigidityDistributionValues = np.linspace(0.0, 10.0, 19)
-    
+
     energySpec = PRCT.convertParticleRigiditySpecToEnergySpec(rigidityValuesInGV, rigidityDistributionValues, particleMassAU=1, particleChargeAU=1)
     
     # No specific assertions in the original test, just checking it runs
@@ -130,7 +130,7 @@ def test_BothSpectralConversions():
     
     # Convert from energy spectrum to rigidity spectrum
     rigiditySpec = PRCT.convertParticleEnergySpecToRigiditySpec(energyValuesInMeV, energyDistributionValues, particleMassAU=1, particleChargeAU=1)
-    
+
     # Convert back from rigidity spectrum to energy spectrum
     energySpec = PRCT.convertParticleRigiditySpecToEnergySpec(
         rigiditySpec["Rigidity"], 
@@ -138,7 +138,7 @@ def test_BothSpectralConversions():
         particleMassAU=1, 
         particleChargeAU=1
     )
-    
+
     # Verify that both energy values and flux values are preserved
     assert np.allclose(np.round(energySpec["Energy"], 2), np.round(energyValuesInMeV, 2))
     assert np.allclose(np.round(energySpec["Energy distribution values"], 2), np.round(energyDistributionValues, 2))
@@ -156,7 +156,7 @@ def test_BothSpectralConversionsAlpha():
     
     # Convert from energy spectrum to rigidity spectrum
     rigiditySpec = PRCT.convertParticleEnergySpecToRigiditySpec(energyValuesInMeV, energyDistributionValues, particleMassAU=4, particleChargeAU=2)
-    
+
     # Convert back from rigidity spectrum to energy spectrum
     energySpec = PRCT.convertParticleRigiditySpecToEnergySpec(
         rigiditySpec["Rigidity"],
@@ -164,7 +164,7 @@ def test_BothSpectralConversionsAlpha():
         particleMassAU=4,
         particleChargeAU=2
     )
-    
+
     # Verify that both energy values and flux values are preserved
     assert np.allclose(np.round(energySpec["Energy"], 2), np.round(energyValuesInMeV, 2))
     assert np.allclose(np.round(energySpec["Energy distribution values"], 2), np.round(energyDistributionValues, 2))
