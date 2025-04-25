@@ -1,0 +1,32 @@
+[project]
+name = "ParticleRigidityCalculationTools"
+version = "1.5.17"
+description = "Python library containing tools for dealing with conversions between particle energy and rigidity"
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [
+    {name = "Space Environment and Protection Group, University of Surrey"}
+]
+license = {text = "CC BY-NC-SA 4.0"}
+keywords = ["space", "physics", "earth", "geomagnetic", "rigidity", "magnetocosmics"]
+dependencies = [
+    "numpy>=1.23.1",
+    "pandas>=1.4.3",
+    "setuptools>=45.2.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[project.urls]
+Homepage = "https://github.com/ssc-maire/ParticleRigidityCalculationTools"
+
+[build-system]
+requires = ["setuptools>=45.2.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.pytest]
+testpaths = ["test_ParticleRigidityCalculationTools.py"]
+
+[tool.setuptools]
+py-modules = ["ParticleRigidityCalculationTools"]
