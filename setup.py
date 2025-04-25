@@ -1,3 +1,16 @@
+"""
+Setup script for ParticleRigidityCalculationTools.
+
+This module handles the installation and distribution of the
+ParticleRigidityCalculationTools package, a specialized library for
+space physics calculations related to charged particle motion in
+magnetic fields.
+
+The package provides tools for converting between particle kinetic energy
+and magnetic rigidity, which are essential parameters for studies of
+cosmic rays, solar energetic particles, and magnetospheric physics.
+"""
+
 from setuptools import find_packages, setup
 import os
 
@@ -23,12 +36,24 @@ setup(
     long_description_content_type='text/markdown',
     author='Space Environment and Protection Group, University of Surrey',
     url='https://github.com/ssc-maire/ParticleRigidityCalculationTools',
-    keywords = 'space physics earth geomagnetic rigidity magnetocosmics',
+    keywords='space physics earth geomagnetic rigidity magnetocosmics cosmic-rays solar-particles',
     license='CC BY-NC-SA 4.0',
     install_requires=['numpy>=1.23.1',
-                      'pandas>=1.4.3',
                       'setuptools>=45.2.0'],
     #install_requires,
     setup_requires=['pytest-runner'],
     tests_require=['pytest'],
+    classifiers=[
+        'Development Status :: 5 - Production/Stable',
+        'Intended Audience :: Science/Research',
+        'Topic :: Scientific/Engineering :: Physics',
+        'Topic :: Scientific/Engineering :: Astronomy',
+        'License :: OSI Approved :: Creative Commons License',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+    ],
+    python_requires='>=3.7',
 )
