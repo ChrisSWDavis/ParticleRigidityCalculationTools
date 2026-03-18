@@ -27,6 +27,23 @@ def test_getAtomicMass():
     """
     assert PRCT.getAtomicMass(12) == 24.3
 
+def test_rigidityConversion_single_value():
+    """
+    Test conversion from kinetic energy to magnetic rigidity.
+    
+    Verifies that the convertParticleEnergyToRigidity function correctly
+    calculates rigidity values for a set of proton energies. The expected
+    values have been pre-calculated and validated against established
+    particle physics references.
+    """
+    particleKineticEnergyInMeV = 250.0
+
+    outputValues = PRCT.convertParticleEnergyToRigidity(particleKineticEnergyInMeV, particleMassAU=1.0, particleChargeAU=1.0)
+
+    roundedOutputValue = np.round(outputValues, 2)
+
+    assert roundedOutputValue == 0.73
+
 def test_rigidityConversion():
     """
     Test conversion from kinetic energy to magnetic rigidity.
