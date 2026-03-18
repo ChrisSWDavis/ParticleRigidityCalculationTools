@@ -44,6 +44,20 @@ def allowForNonSeriesInputArgs(functionToModify):
 def _to_float_series(seriesLike: pd.Series) -> pd.Series:
     return seriesLike.astype(np.float64)
 
+
+def _momentum_pc_from_kinetic_joules(ek_j, e0_j):
+    """
+    Relativistic |p|c from kinetic energy E_kin and rest energy E0 (joules).
+
+    Uses pc^2 = E_kin * (2*E0 + E_kin), equivalent to E_tot^2 - E0^2 but
+    numerically stable when E_kin << E0 (avoids catastrophic cancellation).
+    """
+    ek = np.asarray(ek_j, dtype=np.float64)
+    e0 = float(e0_j)
+    pc_squared = ek * (2.0 * e0 + ek)
+    np.clip(pc_squared, 0.0, None, out=pc_squared)
+    return np.sqrt(pc_squared, out=pc_squared)
+
 def getAtomicMass(atomicNumber):
 
     if atomicNumber < 0:
@@ -68,13 +82,9 @@ def convertParticleEnergyToRigidity(particleKineticEnergyInMeV:pd.Series, partic
 
     kineticEnergyMeV = _to_float_series(particleKineticEnergyInMeV)
     particleKineticEnergyInJoules = kineticEnergyMeV * MeVtoJoules
-    totalParticleEnergy = particleKineticEnergyInJoules + particleRestEnergy
-    underSqrt = np.clip(
-        totalParticleEnergy.to_numpy(copy=False) ** 2 - particleRestEnergy ** 2,
-        a_min=0.0,
-        a_max=None,
+    pc = _momentum_pc_from_kinetic_joules(
+        particleKineticEnergyInJoules.to_numpy(copy=False), particleRestEnergy
     )
-    pc = np.sqrt(underSqrt)
 
     rigidityInGV = (pc / particleCharge) * 1e-9
 
@@ -88,9 +98,14 @@ def convertParticleRigidityToEnergy(particleRigidityInGV:pd.Series, particleMass
     rigidityInGV = _to_float_series(particleRigidityInGV)
     pc = rigidityInGV.to_numpy(copy=False) * particleCharge * 1e9
 
-    totalParticleEnergy = np.sqrt((pc ** 2) + (particleRestEnergy ** 2))
-
-    particleKEinJoules = totalParticleEnergy - particleRestEnergy
+    pc_sq = pc * pc
+    e0 = particleRestEnergy
+    totalParticleEnergy = np.sqrt(pc_sq + e0 * e0)
+    # E_kin = E_tot - E0 cancels when pc << E0; stable: E_kin = pc^2 / (E_tot + E0)
+    denom = totalParticleEnergy + e0
+    particleKEinJoules = np.divide(
+        pc_sq, denom, out=np.zeros_like(pc_sq, dtype=np.float64), where=denom > 0.0
+    )
 
     KEinMeV = particleKEinJoules * JoulesToMeV
 
@@ -101,8 +116,7 @@ def calculate_dKEoverdR(particleKineticEnergyInMeV:pd.Series, particleChargeInCo
     particleKineticEnergyInJoules = kineticEnergyMeV.to_numpy(copy=False) * MeVtoJoules
 
     totalParticleEnergy = particleKineticEnergyInJoules + particleRestEnergy
-    underSqrt = np.clip((totalParticleEnergy ** 2) - (particleRestEnergy ** 2), a_min=0.0, a_max=None)
-    pc = np.sqrt(underSqrt) # units of pc are in joules
+    pc = _momentum_pc_from_kinetic_joules(particleKineticEnergyInJoules, particleRestEnergy)
 
     fullFactor = np.divide(pc, totalParticleEnergy, out=np.zeros_like(pc), where=totalParticleEnergy != 0.0)
 
