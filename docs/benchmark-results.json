@@ -1,0 +1,27 @@
+{
+  "repeats": 5,
+  "sample_size": 200000,
+  "summary": {
+    "convertParticleEnergySpecToRigiditySpec": {
+      "max_seconds": 0.0044142919996374985,
+      "median_seconds": 0.004392928000015672,
+      "min_seconds": 0.004362618001323426
+    },
+    "convertParticleEnergyToRigidity": {
+      "max_seconds": 0.003570378999938839,
+      "median_seconds": 0.0033281220003118506,
+      "min_seconds": 0.0032874410007934785
+    },
+    "convertParticleRigiditySpecToEnergySpec": {
+      "max_seconds": 0.004157233999649179,
+      "median_seconds": 0.004119770999750472,
+      "min_seconds": 0.004090096999789239
+    },
+    "convertParticleRigidityToEnergy": {
+      "max_seconds": 0.0008547510005882941,
+      "median_seconds": 0.0008486050010105828,
+      "min_seconds": 0.0008355530007975176
+    }
+  },
+  "warmup": 1
+}

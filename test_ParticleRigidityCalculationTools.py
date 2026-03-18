@@ -32,6 +32,36 @@ def test_rigidityAndEnergyConversion():
     assert list(outputEnergyValues.apply(oneDPround)) == particleKineticEnergyInMeV
 
 
+def test_smallKineticEnergy_roundTrip_rigidityEnergy_stable():
+    """
+    E_kin << m_p c^2 (eV–keV scale in MeV): stable formulas should round-trip
+    energy → rigidity → energy without catastrophic loss (float64).
+    """
+    # 1e-6 MeV = 1 eV; 1e-3 MeV = 1 keV; up to 100 keV
+    particleKineticEnergyInMeV = np.array(
+        [1e-8, 1e-7, 1e-6, 1e-5, 1e-4, 1e-3, 0.01, 0.05, 0.1],
+        dtype=np.float64,
+    )
+    rigidity_gv = PRCT.convertParticleEnergyToRigidity(
+        particleKineticEnergyInMeV,
+        particleMassAU=1.0,
+        particleChargeAU=1.0,
+    )
+    energy_back_mev = PRCT.convertParticleRigidityToEnergy(
+        rigidity_gv,
+        particleMassAU=1.0,
+        particleChargeAU=1.0,
+    )
+    np.testing.assert_allclose(
+        energy_back_mev.to_numpy(),
+        particleKineticEnergyInMeV,
+        rtol=1e-12,
+        atol=1e-18,
+    )
+    assert np.all(rigidity_gv.to_numpy() >= 0.0)
+    assert np.all(np.diff(rigidity_gv.to_numpy()) > 0.0)
+
+
 #######################################################
 
 def test_EnergySpecToRigiditySpec():
